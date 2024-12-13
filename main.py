@@ -48,6 +48,7 @@ class Player():
         action = self.get_player_action()
         if action == Commands.PICKUP_GUN:
             player_to_shoot = self.choose_player_to_shoot()
+            myoutput(f"{self.name} targets {player_to_shoot.name}!")
             self.gun.set_target(player_to_shoot)
             self.gun.fire()
 
@@ -115,16 +116,15 @@ class Game():
         self.player1 = Player("Genshin")
         self.player2 = Player("ZZZ")
 
-        all_players_list = [self.player1, self.player2]
+        self.all_players_list = [self.player1, self.player2]
 
         self.player1.set_gun(self.gun)
-        self.player1.set_opponents_list(all_players_list)
+        self.player1.set_opponents_list(self.all_players_list)
         self.player1.print_info()
 
         self.player2.set_gun(self.gun)
-        self.player2.set_opponents_list(all_players_list)
+        self.player2.set_opponents_list(self.all_players_list)
         self.player2.print_info()
-
 
 
     def generate_random_bullets(self):
@@ -133,7 +133,7 @@ class Game():
         """
         max_poss_bullets = 6
         total_num_bullets = random.randint(2, max_poss_bullets)
-        num_blanks = random.randint(1, max_poss_bullets - 1)
+        num_blanks = random.randint(1, total_num_bullets - 1)
         num_lives = total_num_bullets - num_blanks
         return num_blanks, num_lives
 
@@ -145,6 +145,10 @@ class Game():
         else:
             self.player_with_turn = self.player1
 
+
+    def print_round_info(self):
+        for player in self.all_players_list:
+            myoutput(f"{player.name} has {player.health} left.")
 
     def run(self):
         myoutput("STARTING GAME")
@@ -159,12 +163,9 @@ class Game():
                 myoutput(f"Number of Blanks: {num_blanks}, Number of Lives: {num_lives}")
                 self.gun.load_gun_in_random_order(num_blanks, num_lives)
 
+            myoutput(f"---{self.player_with_turn.name}'s TURN---")
             self.player_with_turn.play_turn()
             self.switch_turns()
-
-
-        
-            
 
 
 
